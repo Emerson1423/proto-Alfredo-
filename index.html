@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planilla laboral | El Salvador</title>
+    <style>
+        :root {
+            --ink: #17202a;
+            --muted: #667085;
+            --line: #d9e0e8;
+            --paper: #ffffff;
+            --wash: #f4f7f8;
+            --teal: #087f73;
+            --teal-dark: #075c55;
+            --amber: #b86800;
+            --red: #b42318;
+            --green: #176b42;
+            --shadow: 0 18px 45px rgba(23, 32, 42, 0.09);
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            color: var(--ink);
+            background: var(--wash);
+            font-family: Georgia, "Times New Roman", serif;
+        }
+        button, input, select { font: inherit; }
+        .shell { max-width: 1180px; margin: 0 auto; padding: 34px 20px 56px; }
+        .masthead { display: flex; justify-content: space-between; gap: 24px; align-items: end; margin-bottom: 28px; }
+        .eyebrow { color: var(--teal); font: 700 0.74rem/1.2 Arial, sans-serif; letter-spacing: 0.13em; text-transform: uppercase; }
+        h1 { font-size: clamp(2.1rem, 5vw, 4.7rem); line-height: 0.95; margin: 9px 0 12px; max-width: 680px; font-weight: 700; }
+        .intro { color: var(--muted); max-width: 650px; margin: 0; font: 0.98rem/1.55 Arial, sans-serif; }
+        .tag { border: 1px solid #b8d9d4; color: var(--teal-dark); padding: 10px 13px; font: 700 0.75rem Arial, sans-serif; white-space: nowrap; background: #eaf7f5; }
+        .layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr); gap: 22px; align-items: start; }
+        .panel { background: var(--paper); border: 1px solid var(--line); box-shadow: var(--shadow); padding: 25px; }
+        .panel + .panel { margin-top: 18px; }
+        .panel h2 { margin: 0 0 20px; font-size: 1.35rem; }
+        .section-head { display: flex; gap: 12px; align-items: baseline; border-bottom: 1px solid var(--line); padding-bottom: 13px; margin-bottom: 18px; }
+        .section-number { color: var(--teal); font: 700 0.78rem Arial, sans-serif; }
+        .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+        .field { display: flex; flex-direction: column; gap: 7px; }
+        .field.full { grid-column: 1 / -1; }
+        label, legend { font: 700 0.78rem Arial, sans-serif; color: #344054; }
+        input, select { width: 100%; border: 1px solid #bcc7d2; background: #fff; color: var(--ink); padding: 11px 12px; border-radius: 2px; outline: none; }
+        input:focus, select:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(8, 127, 115, 0.12); }
+        .hint { color: var(--muted); font: 0.75rem/1.35 Arial, sans-serif; }
+        .checks { display: grid; gap: 13px; margin-top: 16px; }
+        .check { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; font: 0.9rem/1.4 Arial, sans-serif; color: #344054; }
+        .check input { width: 17px; height: 17px; accent-color: var(--teal); margin-top: 1px; }
+        .conditional { display: none; margin: 12px 0 0 27px; }
+        .conditional.visible { display: block; }
+        .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 22px; }
+        button { border: 0; border-radius: 2px; padding: 12px 18px; cursor: pointer; font: 700 0.82rem Arial, sans-serif; }
+        .primary { background: var(--teal); color: white; }
+        .primary:hover { background: var(--teal-dark); }
+        .secondary { background: #e8eef0; color: var(--ink); }
+        .results { position: sticky; top: 18px; }
+        .result-hero { background: var(--ink); color: white; padding: 22px; margin: -25px -25px 20px; }
+        .result-hero p { margin: 0 0 7px; color: #b9c7cd; font: 700 0.75rem Arial, sans-serif; letter-spacing: 0.08em; text-transform: uppercase; }
+        .net { font-size: 2.8rem; line-height: 1; }
+        .rows { display: grid; gap: 0; }
+        .row { display: flex; justify-content: space-between; gap: 14px; padding: 12px 0; border-bottom: 1px solid #e6eaee; font: 0.91rem Arial, sans-serif; }
+        .row strong { text-align: right; white-space: nowrap; }
+        .row.total { color: var(--teal-dark); font-size: 1.05rem; border-bottom: 0; padding-top: 17px; }
+        .alert-box { margin-top: 20px; }
+        .alert-box h3 { font-size: 1rem; margin: 0 0 10px; }
+        .alert { display: flex; gap: 9px; padding: 11px 12px; margin-top: 8px; font: 0.78rem/1.4 Arial, sans-serif; border-left: 3px solid; }
+        .alert.warning { background: #fff7e8; color: #7a4700; border-color: var(--amber); }
+        .alert.danger { background: #fff0ee; color: #8d2018; border-color: var(--red); }
+        .alert.info { background: #eaf7f5; color: var(--teal-dark); border-color: var(--teal); }
+        .alert.critical { background: #fbe8e6; color: #7a1710; border-color: #8d2018; }
+        .ok { color: var(--green); font: 0.83rem Arial, sans-serif; padding: 12px 0; }
+        .legal { color: var(--muted); font: 0.76rem/1.5 Arial, sans-serif; margin: 20px 0 0; }
+        .legal strong { color: var(--ink); }
+        .production-note { background: #17202a; color: #f4f7f8; padding: 16px 18px; margin: 0 0 22px; font: 0.82rem/1.5 Arial, sans-serif; border-left: 4px solid #e6a23c; }
+        .production-note strong { color: #f5c36b; }
+        .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: end; }
+        .toolbar .field { min-width: 150px; flex: 1; }
+        .toolbar button { align-self: end; }
+        .batch-table { width: 100%; border-collapse: collapse; margin-top: 18px; font: 0.78rem Arial, sans-serif; }
+        .batch-table th, .batch-table td { padding: 10px 8px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
+        .batch-table th { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .batch-table td:last-child, .batch-table th:last-child { text-align: right; }
+        .table-wrap { overflow-x: auto; }
+        .status { display: inline-block; padding: 5px 8px; font-size: 0.68rem; font-weight: 700; background: #fff7e8; color: #7a4700; }
+        .status.ok { background: #eaf7f5; color: var(--green); padding: 5px 8px; }
+        .workflow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 18px; }
+        .workflow-step { border-top: 3px solid var(--line); padding: 10px 7px; color: var(--muted); font: 700 0.72rem/1.35 Arial, sans-serif; }
+        .workflow-step.active { border-color: var(--teal); color: var(--teal-dark); }
+        .module-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
+        .module { border: 1px solid var(--line); padding: 13px; font: 0.76rem/1.45 Arial, sans-serif; }
+        .module strong { display: block; margin-bottom: 4px; color: var(--teal-dark); }
+        .counter { color: var(--muted); font: 0.78rem Arial, sans-serif; margin-top: 12px; }
+        footer { color: var(--muted); font: 0.73rem Arial, sans-serif; margin-top: 22px; }
+        @media (max-width: 820px) {
+            .masthead { align-items: start; flex-direction: column; }
+            .layout { grid-template-columns: 1fr; }
+            .results { position: static; }
+            .module-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 500px) {
+            .shell { padding: 24px 14px 42px; }
+            .panel { padding: 18px; }
+            .result-hero { margin: -18px -18px 20px; }
+            .grid { grid-template-columns: 1fr; }
+            .field.full { grid-column: auto; }
+        }
+        @media print {
+            body { background: white; }
+            .shell { padding: 0; }
+            .panel { box-shadow: none; }
+            .actions { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <main class="shell">
+        <header class="masthead">
+            <div>
+                <div class="eyebrow">Herramienta académica · El Salvador</div>
+                <h1>Planilla laboral</h1>
+                <p class="intro">Registra los datos del trabajador, calcula el salario líquido y revisa las alertas que requieren verificación legal.</p>
+            </div>
+            <div class="tag">BORRADOR DE CÁLCULO</div>
+        </header>
+
+        <div class="production-note"><strong>Modo prototipo de RRHH:</strong> esta pantalla permite simular una nómina consolidada y su flujo operativo. Para producción, los cálculos deben ejecutarse en un backend con base de datos, RBAC, HTTPS, cifrado, auditoría e integración validada con OVISSS, AFP, DGII y banca.</div>
+
+        <div class="layout">
+            <form id="payrollForm" class="panel">
+                <div class="section-head"><span class="section-number">01</span><h2>Datos del trabajador</h2></div>
+                <div class="grid">
+                    <div class="field full">
+                        <label for="nombre">Nombre completo</label>
+                        <input id="nombre" type="text" placeholder="Ej. Ana Martínez" required>
+                    </div>
+                    <div class="field">
+                        <label for="cargo">Cargo</label>
+                        <input id="cargo" type="text" placeholder="Ej. Analista contable" required>
+                    </div>
+                    <div class="field">
+                        <label for="tipo">Tipo de trabajador</label>
+                        <select id="tipo">
+                            <option value="dependiente">Dependiente</option>
+                            <option value="domestico">Trabajo doméstico</option>
+                            <option value="agropecuario">Agropecuario</option>
+                            <option value="aprendiz">Aprendiz / modalidad especial</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="salario">Salario bruto mensual (USD)</label>
+                        <input id="salario" type="number" min="0" step="0.01" value="600" required>
+                    </div>
+                    <div class="field">
+                        <label for="minimo">Salario mínimo aplicable (USD)</label>
+                        <input id="minimo" type="number" min="0" step="0.01" value="408.80" required>
+                        <span class="hint">Verifica el sector y la vigencia antes de presentar el resultado.</span>
+                    </div>
+                </div>
+
+                <div class="section-head" style="margin-top: 30px;"><span class="section-number">02</span><h2>Deducciones y autorizaciones</h2></div>
+                <div class="grid">
+                    <div class="field">
+                        <label for="isss">ISSS del trabajador (%)</label>
+                        <input id="isss" type="number" min="0" max="100" step="0.01" value="3">
+                    </div>
+                    <div class="field">
+                        <label for="afp">AFP del trabajador (%)</label>
+                        <input id="afp" type="number" min="0" max="100" step="0.01" value="7.25">
+                    </div>
+                </div>
+                <div class="checks">
+                    <label class="check"><input id="alimentos" type="checkbox"><span><strong>Pensión alimenticia:</strong> existe orden de retención vigente.</span></label>
+                    <div id="alimentosBox" class="conditional"><label for="montoAlimentos">Monto mensual de pensión alimenticia (USD)</label><input id="montoAlimentos" type="number" min="0" step="0.01" value="0"></div>
+                    <label class="check"><input id="deuda" type="checkbox"><span><strong>Otro descuento / deuda:</strong> se pretende aplicar un descuento distinto de ISSS, AFP o alimentos.</span></label>
+                    <div id="deudaBox" class="conditional"><div class="grid"><div class="field"><label for="montoDeuda">Monto del descuento (USD)</label><input id="montoDeuda" type="number" min="0" step="0.01" value="0"></div><div class="field"><label for="fundamento">Fundamento o autorización</label><select id="fundamento"><option value="no">No consta</option><option value="si">Sí consta</option></select></div></div></div>
+                    <label class="check"><input id="noEnterada" type="checkbox"><span>La cotización fue descontada, pero todavía no ha sido enterada a la institución correspondiente.</span></label>
+                    <label class="check"><input id="embargo" type="checkbox"><span>Existe embargo solicitado por una deuda ordinaria pendiente de verificar.</span></label>
+                    <div id="embargoBox" class="conditional"><label for="montoEmbargo">Monto solicitado del embargo (USD)</label><input id="montoEmbargo" type="number" min="0" step="0.01" value="0"></div>
+                </div>
+                <div class="actions">
+                    <button class="primary" type="submit">Generar planilla</button>
+                    <button class="secondary" type="button" id="printButton">Imprimir / guardar PDF</button>
+                    <button class="secondary" type="reset">Limpiar</button>
+                </div>
+            </form>
+
+            <section class="panel results" aria-live="polite">
+                <div class="result-hero"><p>Salario líquido estimado</p><div id="neto" class="net">$0.00</div></div>
+                <div class="rows">
+                    <div class="row"><span>Salario bruto</span><strong id="bruto">$0.00</strong></div>
+                    <div class="row"><span>ISSS</span><strong id="resIsss">$0.00</strong></div>
+                    <div class="row"><span>AFP</span><strong id="resAfp">$0.00</strong></div>
+                    <div class="row"><span>Pensión alimenticia</span><strong id="resAlimentos">$0.00</strong></div>
+                    <div class="row"><span>Otros descuentos</span><strong id="resOtros">$0.00</strong></div>
+                    <div class="row total"><span>Total deducciones</span><strong id="totalDeducciones">$0.00</strong></div>
+                </div>
+                <div class="alert-box"><h3>Alertas jurídicas</h3><div id="alerts"><div class="ok">Completa y genera la planilla para revisar alertas.</div></div></div>
+                <p class="legal"><strong>Nota:</strong> este prototipo es educativo. Las tasas, límites de inembargabilidad, salarios mínimos y órdenes judiciales deben confirmarse con la normativa vigente y la documentación del caso.</p>
+            </section>
+        </div>
+
+        <section class="panel" id="rrhhPanel" style="margin-top: 22px;">
+            <div class="section-head"><span class="section-number">03</span><h2>Centro de nómina para Recursos Humanos</h2></div>
+            <div class="toolbar">
+                <div class="field"><label for="periodo">Periodicidad</label><select id="periodo"><option value="quincenal">Quincenal</option><option value="mensual">Mensual</option></select></div>
+                <div class="field"><label for="fechaPeriodo">Período</label><input id="fechaPeriodo" type="month" value="2026-09"></div>
+                <div class="field"><label for="etapa">Etapa del workflow</label><select id="etapa"><option>Elaboración</option><option>Revisión RRHH</option><option>Aprobación contable</option><option>Cierre y dispersión</option></select></div>
+                <button class="primary" type="button" id="batchButton">Calcular lote</button>
+                <button class="secondary" type="button" id="csvButton">Exportar CSV</button>
+            </div>
+            <div class="table-wrap">
+                <table class="batch-table" id="batchTable">
+                    <thead><tr><th>Empleado</th><th>Salario base</th><th>Variables</th><th>Bruto período</th><th>Deducciones</th><th>Neto</th><th>Estado</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="counter" id="batchSummary">No hay empleados cargados.</div>
+            <div class="workflow" aria-label="Flujo de aprobación">
+                <div class="workflow-step active">1. Elaboración<br><span>Asistente de nómina</span></div>
+                <div class="workflow-step">2. Revisión<br><span>Jefatura de RRHH</span></div>
+                <div class="workflow-step">3. Aprobación<br><span>Contabilidad</span></div>
+                <div class="workflow-step">4. Cierre<br><span>Tesorería</span></div>
+            </div>
+            <div class="module-grid">
+                <div class="module"><strong>Asistencia y variables</strong>Horas extras diurnas/nocturnas, nocturnidad, asuetos, descansos, comisiones, bonos, viáticos no sujetos y ausencias.</div>
+                <div class="module"><strong>Provisiones laborales</strong>Aguinaldo por antigüedad, vacaciones con 30% y reserva de indemnización o renuncia voluntaria.</div>
+                <div class="module"><strong>Salidas institucionales</strong>OVISSS, SEPP AFP, F-07/F-910, ACH bancario y póliza contable requieren layouts oficiales y credenciales de servidor.</div>
+            </div>
+        </section>
+        <footer>Producto académico · La revisión final corresponde a la persona responsable de la planilla.</footer>
+    </main>
+
+    <script>
+        const form = document.getElementById('payrollForm');
+        const money = value => new Intl.NumberFormat('es-SV', { style: 'currency', currency: 'USD' }).format(value || 0);
+        const number = id => Math.max(0, Number(document.getElementById(id).value) || 0);
+
+        function toggleBox(checkId, boxId) {
+            document.getElementById(boxId).classList.toggle('visible', document.getElementById(checkId).checked);
+        }
+
+        function renderAlerts(salary, minimum, isssRate, afpRate, isss, afp, hasFood, food, hasDebt, debt, hasNotPaid, hasEmbargo, embargo) {
+            const alerts = [];
+            const isssRateLegal = 3;
+            const isssSalaryCeiling = 1000;
+            const isssMaximum = isssSalaryCeiling * isssRateLegal / 100;
+            if (salary <= 0) alerts.push(['critical', 'ALERTA: Debe registrar un salario bruto mensual mayor que cero.']);
+            if (minimum <= 0) alerts.push(['critical', 'ALERTA: Debe registrar un salario mínimo aplicable mayor que cero.']);
+            if (salary < minimum) alerts.push(['warning', 'ALERTA: El salario registrado está por debajo del salario mínimo aplicable.']);
+            if (isssRate > isssRateLegal) alerts.push(['critical', `ALERTA: La tasa ISSS del trabajador (${isssRate.toFixed(2)}%) supera el ${isssRateLegal}% legal. Revise el porcentaje antes de descontar.`]);
+            if (isss > isssMaximum) alerts.push(['critical', `ALERTA: El descuento ISSS (${money(isss)}) supera el máximo mensual estimado de ${money(isssMaximum)} para el trabajador. El excedente no debe cobrarse como ISSS.`]);
+            if (isssRate < 0 || isssRate > 100) alerts.push(['critical', 'ALERTA: La tasa ISSS ingresada no es válida. Debe estar entre 0% y 100%.']);
+            if (afpRate > 7.25) alerts.push(['warning', `ALERTA: La tasa AFP del trabajador (${afpRate.toFixed(2)}%) supera la tasa de referencia del 7.25%. Verifique la normativa y el contrato aplicable.`]);
+            if (afpRate < 0 || afpRate > 100) alerts.push(['critical', 'ALERTA: La tasa AFP ingresada no es válida. Debe estar entre 0% y 100%.']);
+            if (hasDebt && debt > 0 && document.getElementById('fundamento').value === 'no') alerts.push(['danger', 'ALERTA: Se intenta realizar un descuento que requiere fundamento legal o autorización.']);
+            if (hasFood) alerts.push(['info', 'ALERTA: Existe una orden de retención por alimentos. Verifica su vigencia, monto y autoridad emisora.']);
+            if (hasNotPaid) alerts.push(['danger', 'ALERTA: Se descontó una cotización al trabajador, pero el sistema registra que no ha sido enterada.']);
+            if (hasEmbargo && embargo > 0) alerts.push(['warning', 'ALERTA: El embargo solicitado corresponde a una deuda ordinaria y debe verificarse el límite legal aplicable.']);
+            if (food > salary || debt + embargo > salary) alerts.push(['danger', 'ALERTA: Las deducciones declaradas superan el salario bruto; revise los límites y la documentación antes de aplicar.']);
+            if (isss + afp + food + debt + embargo > salary) alerts.push(['critical', 'ALERTA: El total de deducciones supera el salario bruto. No debe generarse una planilla con salario líquido negativo.']);
+            document.getElementById('alerts').innerHTML = alerts.length ? alerts.map(item => `<div class="alert ${item[0]}"><span>●</span><span>${item[1]}</span></div>`).join('') : '<div class="ok">No se detectaron alertas con los datos ingresados.</div>';
+        }
+
+        function calculate(event) {
+            if (event) event.preventDefault();
+            const salary = number('salario');
+            const minimum = number('minimo');
+            const isssRate = number('isss');
+            const afpRate = number('afp');
+            const isss = salary * isssRate / 100;
+            const afp = salary * afpRate / 100;
+            const hasFood = document.getElementById('alimentos').checked;
+            const hasDebt = document.getElementById('deuda').checked;
+            const hasNotPaid = document.getElementById('noEnterada').checked;
+            const hasEmbargo = document.getElementById('embargo').checked;
+            const food = hasFood ? number('montoAlimentos') : 0;
+            const debt = hasDebt ? number('montoDeuda') : 0;
+            const embargo = hasEmbargo ? number('montoEmbargo') : 0;
+            const other = debt + embargo;
+            const total = isss + afp + food + other;
+            document.getElementById('bruto').textContent = money(salary);
+            document.getElementById('resIsss').textContent = money(isss);
+            document.getElementById('resAfp').textContent = money(afp);
+            document.getElementById('resAlimentos').textContent = money(food);
+            document.getElementById('resOtros').textContent = money(other);
+            document.getElementById('totalDeducciones').textContent = money(total);
+            document.getElementById('neto').textContent = money(salary - total);
+            renderAlerts(salary, minimum, isssRate, afpRate, isss, afp, hasFood, food, hasDebt, debt, hasNotPaid, hasEmbargo, embargo);
+        }
+
+        const employees = [
+            { name: 'Ana Martínez', base: 850, variable: 72.50, deductions: 87.13 },
+            { name: 'Carlos López', base: 1200, variable: 145, deductions: 123.08 },
+            { name: 'Sofía Hernández', base: 520, variable: 0, deductions: 53.30 }
+        ];
+
+        function periodFactor() {
+            return document.getElementById('periodo').value === 'quincenal' ? 0.5 : 1;
+        }
+
+        function calculateBatch() {
+            const factor = periodFactor();
+            const rows = employees.map(employee => {
+                const gross = (employee.base * factor) + employee.variable;
+                const deductions = employee.deductions * factor;
+                return { ...employee, gross, deductions, net: gross - deductions };
+            });
+            document.querySelector('#batchTable tbody').innerHTML = rows.map(row => `<tr><td>${row.name}</td><td>${money(row.base)}</td><td>${money(row.variable)}</td><td>${money(row.gross)}</td><td>${money(row.deductions)}</td><td><strong>${money(row.net)}</strong></td><td><span class="status ok">Calculado</span></td></tr>`).join('');
+            const totalGross = rows.reduce((sum, row) => sum + row.gross, 0);
+            const totalNet = rows.reduce((sum, row) => sum + row.net, 0);
+            document.getElementById('batchSummary').textContent = `${rows.length} empleados · Bruto consolidado: ${money(totalGross)} · Neto a dispersar: ${money(totalNet)} · Periodicidad: ${document.getElementById('periodo').selectedOptions[0].text}`;
+        }
+
+        function exportBatchCsv() {
+            calculateBatch();
+            const factor = periodFactor();
+            const header = 'Empleado,Salario base,Variables,Bruto periodo,Deducciones,Neto\n';
+            const body = employees.map(employee => {
+                const gross = employee.base * factor + employee.variable;
+                const deductions = employee.deductions * factor;
+                return [employee.name, employee.base, employee.variable, gross, deductions, gross - deductions].join(',');
+            }).join('\n');
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(new Blob([header + body], { type: 'text/csv;charset=utf-8' }));
+            link.download = `nomina-${document.getElementById('fechaPeriodo').value || 'periodo'}.csv`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }
+
+        ['alimentos', 'deuda', 'embargo'].forEach(id => document.getElementById(id).addEventListener('change', () => {
+            toggleBox(id, `${id}Box`);
+            calculate();
+        }));
+        form.addEventListener('input', calculate);
+        form.addEventListener('submit', calculate);
+        form.addEventListener('reset', () => setTimeout(() => { ['alimentos', 'deuda', 'embargo'].forEach(id => toggleBox(id, `${id}Box`)); calculate(); }, 0));
+        document.getElementById('printButton').addEventListener('click', () => { calculate(); window.print(); });
+        document.getElementById('batchButton').addEventListener('click', calculateBatch);
+        document.getElementById('csvButton').addEventListener('click', exportBatchCsv);
+        document.getElementById('periodo').addEventListener('change', calculateBatch);
+        document.getElementById('etapa').addEventListener('change', event => document.querySelectorAll('.workflow-step').forEach((step, index) => step.classList.toggle('active', index === event.target.selectedIndex)));
+        calculate();
+        calculateBatch();
+    </script>
+</body>
+</html>
+
+
+m
